@@ -67,10 +67,13 @@ public class Lset<Q> implements Set151Interface<Q> {
 		return false;
 	}
 
+	/**
+	 * Is the linked list empty
+	 * @return True if empty
+	 */
 	@Override
 	public boolean isEmpty() {
-		// TODO Auto-generated method stub
-		return false;
+		return length == 0;
 	}
 
 	@Override
@@ -97,10 +100,13 @@ public class Lset<Q> implements Set151Interface<Q> {
 		return false;
 	}
 
+	/**
+	 * Get the size of the linked list
+	 * @return Linked list size
+	 */
 	@Override
 	public int size() {
-		// TODO Auto-generated method stub
-		return 0;
+		return length;
 	}
 
 	@Override
@@ -116,7 +122,7 @@ public class Lset<Q> implements Set151Interface<Q> {
 	}
 	
 	/**
-	 * Basic implementation of a ndoe for a linked list
+	 * Basic implementation of a node for a linked list
 	 */
 	private class Node {
 		/** The next node in the linked list */

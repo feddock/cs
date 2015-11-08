@@ -1,6 +1,11 @@
 import java.util.Collection;
 import java.util.Iterator;
 
+/**
+ * Basic implementation of a set, using a linked list
+ *
+ * @param <Q> Type of data contained in node
+ */
 public class Lset<Q> implements Set151Interface<Q> {
 	/** The head of the linked list */
 	private Node head;
@@ -14,6 +19,24 @@ public class Lset<Q> implements Set151Interface<Q> {
 		return null;
 	}
 
+	/**
+	 * Get a node at the requested position in the linked list
+	 * @param position Linked list position
+	 * @return Node at position
+	 */
+	private Node getNodeAt(int position) {
+		/** The node which will eventually be returned */
+		Node walker = head;
+		
+		assert position > 0 && position <= length : "Invalid position requested";
+		
+		for (int i = 1; i < position; i++) {
+			walker = walker.next;
+		}
+		
+		return walker;
+	}
+	
 	/**
 	 * Add a node to the linked list
 	 * @param data Data for new node

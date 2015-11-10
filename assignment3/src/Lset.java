@@ -13,10 +13,35 @@ public class Lset<Q> implements Set151Interface<Q> {
 	/** The length of the linked list */
 	private int length;
 	
+	public Lset() {
+		// The clear method sets desired state
+		this.clear();
+	}
+	
+	public Lset(Collection<? extends Q> coll) {
+		this.addAll(coll);
+	}
+	
+	public class NodeIterator implements Iterator<Q> {
+		Node current;
+		
+		private NodeIterator() {
+			current = null;
+		}
+		
+		public boolean hasNext() {
+			return (current == null && head != null) || current.next != null;
+		}
+		
+		public Q next() {
+			current = current == null ? head : current.next;
+			return current.getData();
+		}
+	}
+	
 	@Override
 	public Iterator<Q> iterator() {
-		// TODO Auto-generated method stub
-		return null;
+		return new NodeIterator();
 	}
 
 	/**
@@ -44,31 +69,22 @@ public class Lset<Q> implements Set151Interface<Q> {
 	@Override
 	public boolean add(Q data) {
 		/** Node to be added to end of linked list */
-		Node node = new Node(data);
+		Node node;
 		
-		/** Does new node already exist in linked list? */
-		boolean exists = false;
+		/** Should this element be added to set? */
+		boolean addElement = !this.contains(data);
 		
-		/** Temporary node variable for walking linked list */
-		Node walker = head;
-		
-		if (length == 0) {
-			head = node;
+		if (addElement) {
+			 node = new Node(data);
+			if (this.size() == 0) 
+				head = node;
+			else
+				this.getNodeAt(length).next = node;
 			length++;
-		} else {
-			while (walker.next != null) {
-				walker = walker.next;
-				if (walker.getData().equals(data)) 
-					exists = true;
-			}
-			
-			if (!exists) {
-				walker.next = node;
-				length++;
-			}
 		}
 		
-		return !exists;
+		return addElement;
+		
 	}
 
 	/** Reinitialize the linked list to be empty */
@@ -79,9 +95,22 @@ public class Lset<Q> implements Set151Interface<Q> {
 	}
 
 	@Override
-	public boolean contains(Object o) {
-		// TODO Auto-generated method stub
-		return false;
+	public boolean contains(Object obj) {
+		Q data = (Q) obj;
+		
+		/** Temporary node variable for walking linked list */
+		Node walker = head;
+		
+		/** Does new node already exist in linked list? */
+		boolean exists = false;
+		
+		while (walker != null) {
+			if (walker.getData().equals(data)) 
+				exists = true;
+			walker = walker.next;
+		}
+		
+		return exists;
 	}
 
 	@Override
@@ -106,9 +135,16 @@ public class Lset<Q> implements Set151Interface<Q> {
 	}
 
 	@Override
-	public boolean addAll(Collection<? extends Q> c) {
-		// TODO Auto-generated method stub
-		return false;
+	public boolean addAll(Collection<? extends Q> coll) {
+		boolean listChanged = false;
+		
+		Iterator<? extends Q> iter = coll.iterator();
+		while (iter.hasNext()) {
+			if (this.add((Q) iter.next()))
+				listChanged = true;
+		}
+		
+		return listChanged;
 	}
 
 	@Override
@@ -142,6 +178,44 @@ public class Lset<Q> implements Set151Interface<Q> {
 	public <T> T[] toArray(T[] array) {
 		// TODO Auto-generated method stub
 		return null;
+	}
+	
+	@Override
+	public String toString() {
+		Node walker = head;
+		
+		StringBuilder retStr = new StringBuilder();
+		
+		while (walker != null) {
+			retStr.append(", ").append(walker.getData());
+			walker = walker.next;
+		}
+		
+		// Remove the starting comma
+		if (retStr.length() > 2)
+			retStr.delete(0, 2);
+		
+		// Add the opening and closing brackets
+		retStr.insert(0, '<');
+		retStr.append('>');
+		
+		return retStr.toString();
+	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		if (obj instanceof Lset) {
+			Lset<Q> other = (Lset<Q>) obj;
+			Iterator<Q> iterator = other.iterator();
+			while (iterator.hasNext()) {
+				if (!this.contains(iterator.next()))
+					return false;		
+				if (this.size() == other.size())
+					return true;
+			}
+			
+		}
+		return false;
 	}
 	
 	/**

@@ -7,50 +7,83 @@ import java.util.Iterator;
  * @param <Q> Type of data contained in node
  */
 public class Lset<Q> implements Set151Interface<Q> {
-	/** The head of the linked list */
+	// The head of the list
 	private Node head;
 	
-	/** The length of the linked list */
+	// The length of the set
 	private int length;
 	
+	/**
+	 * Initialize the empty set
+	 */
 	public Lset() {
 		// The clear method sets desired state
 		this.clear();
 	}
 	
+	/**
+	 * Initialize the set with elements from the collection
+	 * @param coll Items to add
+	 */
 	public Lset(Collection<? extends Q> coll) {
+		this();
+		
+		checkForNull(coll);
+		
 		this.addAll(coll);
 	}
-	
-	public class NodeIterator implements Iterator<Q> {
-		Node current;
-		
-		private NodeIterator() {
-			current = null;
-		}
-		
-		public boolean hasNext() {
-			return (current == null && head != null) || current.next != null;
-		}
-		
-		public Q next() {
-			current = current == null ? head : current.next;
-			return current.getData();
-		}
-	}
-	
+
+	/**
+	 * Return a new iterator to the set
+	 */
 	@Override
 	public Iterator<Q> iterator() {
 		return new NodeIterator();
 	}
 
 	/**
+	 * Is the linked list empty
+	 * @return True if empty
+	 */
+	@Override
+	public boolean isEmpty() {
+		return length == 0;
+	}
+	
+	/**
+	 * Get the size of the linked list
+	 * @return Linked list size
+	 */
+	@Override
+	public int size() {
+		return length;
+	}
+	
+	/**
+	 * Reinitialize empty set
+	 */
+	@Override
+	public void clear() {
+		this.head = null;
+		this.length = 0;
+	}
+	
+	/**
+	 * Throw exception if object is null
+	 * @param o Object
+	 */
+	private void checkForNull(Object o) {
+		if (o == null)
+			throw new  IllegalArgumentException();
+	}
+	
+	/**
 	 * Get a node at the requested position in the linked list
 	 * @param position Linked list position
 	 * @return Node at position
 	 */
 	private Node getNodeAt(int position) {
-		/** The node which will eventually be returned */
+		// The node which will eventually be returned
 		Node walker = head;
 		
 		assert position > 0 && position <= length : "Invalid position requested";
@@ -61,17 +94,70 @@ public class Lset<Q> implements Set151Interface<Q> {
 		
 		return walker;
 	}
+
+	/**
+	 * Add items from collection to the set
+	 * @param coll Items to initialize
+	 * @return True if items added
+	 */
+	@Override
+	public boolean addAll(Collection<? extends Q> coll) {
+		// Has the set been altered?
+		boolean listChanged = false;
+		
+		// Iterator of items to be added
+		Iterator<? extends Q> iter;
+		
+		checkForNull(coll);
+		
+		iter = coll.iterator();
+		
+		while (iter.hasNext()) {
+			if (this.add((Q) iter.next()))
+				listChanged = true;
+		}
+		
+		return listChanged;
+	}
 	
 	/**
-	 * Add a node to the linked list
-	 * @param data Data for new node
+	 * Determine if an element is contained in the set
+	 * @param obj Element
+	 * @return True if element exists
+	 */
+	@Override
+	public boolean contains(Object obj) {
+		// Data to search for
+		Q data = (Q) obj;
+		
+		// Temporary node for walking list
+		Node walker = head;
+		
+		// Does element already exist in set?
+		boolean exists = false;
+		
+		checkForNull(obj);
+		
+		while (walker != null) {
+			if (walker.getData().equals(data)) 
+				exists = true;
+			walker = walker.next;
+		}
+		
+		return exists;
+	}
+	
+	/**
+	 * Add an element to the set
+	 * @param data New element
+	 * @return True if added
 	 */
 	@Override
 	public boolean add(Q data) {
-		/** Node to be added to end of linked list */
+		// Node to be added to end of linked list 
 		Node node;
 		
-		/** Should this element be added to set? */
+		// Should this element be added to set? 
 		boolean addElement = !this.contains(data);
 		
 		if (addElement) {
@@ -83,107 +169,19 @@ public class Lset<Q> implements Set151Interface<Q> {
 			length++;
 		}
 		
-		return addElement;
-		
-	}
-
-	/** Reinitialize the linked list to be empty */
-	@Override
-	public void clear() {
-		this.head = null;
-		this.length = 0;
-	}
-
-	@Override
-	public boolean contains(Object obj) {
-		Q data = (Q) obj;
-		
-		/** Temporary node variable for walking linked list */
-		Node walker = head;
-		
-		/** Does new node already exist in linked list? */
-		boolean exists = false;
-		
-		while (walker != null) {
-			if (walker.getData().equals(data)) 
-				exists = true;
-			walker = walker.next;
-		}
-		
-		return exists;
-	}
-
-	@Override
-	public boolean containsAll(Collection<?> c) {
-		// TODO Auto-generated method stub
-		return false;
+		return addElement;	
 	}
 
 	/**
-	 * Is the linked list empty
-	 * @return True if empty
+	 * Return a string representation of the set
+	 * @return Set description
 	 */
-	@Override
-	public boolean isEmpty() {
-		return length == 0;
-	}
-
-	@Override
-	public boolean remove(Object o) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public boolean addAll(Collection<? extends Q> coll) {
-		boolean listChanged = false;
-		
-		Iterator<? extends Q> iter = coll.iterator();
-		while (iter.hasNext()) {
-			if (this.add((Q) iter.next()))
-				listChanged = true;
-		}
-		
-		return listChanged;
-	}
-
-	@Override
-	public boolean removeAll(Collection<?> c) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public boolean retainAll(Collection<?> c) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	/**
-	 * Get the size of the linked list
-	 * @return Linked list size
-	 */
-	@Override
-	public int size() {
-		return length;
-	}
-
-	@Override
-	public Object[] toArray() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public <T> T[] toArray(T[] array) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-	
 	@Override
 	public String toString() {
+		// Node used to iterate through the list
 		Node walker = head;
 		
+		// String to be returned
 		StringBuilder retStr = new StringBuilder();
 		
 		while (walker != null) {
@@ -202,30 +200,156 @@ public class Lset<Q> implements Set151Interface<Q> {
 		return retStr.toString();
 	}
 	
+	/**
+	 * Determine if elements are contained in set
+	 * @param coll Elements
+	 * @return True if all elements exist
+	 */
 	@Override
-	public boolean equals(Object obj) {
-		if (obj instanceof Lset) {
-			Lset<Q> other = (Lset<Q>) obj;
-			Iterator<Q> iterator = other.iterator();
-			while (iterator.hasNext()) {
-				if (!this.contains(iterator.next()))
-					return false;		
-				if (this.size() == other.size())
-					return true;
-			}
-			
-		}
-		return false;
+	public boolean containsAll(Collection<?> coll) {
+		// Iterator of comparison collection
+		Iterator<?> iterator;
+		
+		if (coll == null || coll.size() == 0)
+			throw new IllegalArgumentException();
+		
+		if (coll.size() > this.size())
+			return false;
+		
+		iterator = coll.iterator();	
+		while (iterator.hasNext()) {
+			if (!this.contains(iterator.next()))
+				return false;		
+		}	
+		
+		return true;
 	}
 	
+	/**
+	 * Remove an item from the set
+	 * @param data Data of item to remove
+	 * @return True if item removed
+	 */
+	@Override
+	public boolean remove(Object data) {
+		// The item which we'll remove
+		Node walker = head;
+		
+		if (isEmpty() || data == null)
+			throw new IllegalArgumentException();
+		
+		// Handle case where item is first in list
+		if (walker.getData().equals((Q) data)) {
+			if (this.size() == 1)
+				this.clear();
+			else {
+				head = head.next;
+				length--;
+			}
+			return true;
+		}
+		
+		// Check items two through end of list
+		if (this.size() > 1)
+			while (walker.next != null) {
+				if(walker.next.getData().equals((Q) data)) {
+					walker.next = walker.next.next;
+					length--;
+					return true;
+				}
+				walker = walker.next;
+			}
+		
+		return false;
+	}
+
+	/**
+	 * Remove collection of elements from the set
+	 * @param c Elements
+	 * @return True if elements removed
+	 */
+	@Override
+	public boolean removeAll(Collection<?> c) {
+		// Starting size of the set
+		int startSize = this.size();
+		
+		// Our iterator for the collection
+		Iterator<?> iterator;
+		
+		if (!c.isEmpty()) {
+			iterator = c.iterator();
+			
+			while (iterator.hasNext()) {
+				this.remove(iterator.next());
+			}
+			
+			return startSize != this.size();
+		}
+			
+		return false;
+	}
+
+	@Override
+	public boolean retainAll(Collection<?> c) {
+		// Starting size of our collection
+		int startSize = this.size();
+		
+		// The current element in our list
+		Node walker = head;
+		
+		while (walker != null) {
+			if (!c.contains(walker.getData()))
+				this.remove(walker.getData());
+			walker = walker.next;
+		}
+		
+		return !(startSize == this.size());
+	}
+
+	/**
+	 * Not supported in our implementation
+	 */
+	@Override
+	public Object[] toArray() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	/**
+	 * Not supported in our implementation
+	 */
+	@Override
+	public <T> T[] toArray(T[] array) {
+		throw new UnsupportedOperationException();
+	}
+	
+	/**
+	 * Test if set is equal to another
+	 * @return True if equal
+	 */
+	@Override
+	public boolean equals(Object obj) {
+		// Set to be compared
+		Lset<Q> other;
+		
+		if (obj != null && obj instanceof Set151Interface) {
+			other = (Lset<Q>) obj;
+			
+			return (this.size() == 0 || this.containsAll(other)) && 
+					(other.size() == this.size());
+		}
+		
+		return false;
+	}	
+
 	/**
 	 * Basic implementation of a node for a linked list
 	 */
 	private class Node {
-		/** The next node in the linked list */
+		// The next node in the linked list 
 		private Node next;
 		
-		/** The data contained in this node */
+		// The data contained in this node 
 		private Q data;
 		
 		/**
@@ -246,4 +370,35 @@ public class Lset<Q> implements Set151Interface<Q> {
 		}
 	}
 	
+	/**
+	 * Iterator for collections of element type Q
+	 */
+	public class NodeIterator implements Iterator<Q> {
+		// Current element of iteration
+		Node current;
+		
+		/**
+		 * Initialize the iterator
+		 */
+		private NodeIterator() {
+			current = null;
+		}
+		
+		/**
+		 * Determine if elements exist past current
+		 * @return True if further elements exist
+		 */
+		public boolean hasNext() {
+			return (current == null && head != null) || current.next != null;
+		}
+		
+		/**
+		 * Return the next element in the collection
+		 * @return Next element in list
+		 */
+		public Q next() {
+			current = current == null ? head : current.next;
+			return current.getData();
+		}
+	}
 }

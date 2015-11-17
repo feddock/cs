@@ -4,9 +4,11 @@ import java.util.Iterator;
 /**
  * Basic implementation of a set, using a linked list
  *
+ * @author HS
+ * @version 2015.11.17
  * @param <Q> Type of data contained in node
  */
-public class Lset<Q> implements Set151Interface<Q> {
+public class Linked<Q> implements Set151Interface<Q> {
 	// The head of the list
 	private Node head;
 	
@@ -16,7 +18,7 @@ public class Lset<Q> implements Set151Interface<Q> {
 	/**
 	 * Initialize the empty set
 	 */
-	public Lset() {
+	public Linked() {
 		// The clear method sets desired state
 		this.clear();
 	}
@@ -25,7 +27,7 @@ public class Lset<Q> implements Set151Interface<Q> {
 	 * Initialize the set with elements from the collection
 	 * @param coll Items to add
 	 */
-	public Lset(Collection<? extends Q> coll) {
+	public Linked(Collection<? extends Q> coll) {
 		this();
 		
 		checkForNull(coll);
@@ -330,10 +332,10 @@ public class Lset<Q> implements Set151Interface<Q> {
 	@Override
 	public boolean equals(Object obj) {
 		// Set to be compared
-		Lset<Q> other;
+		Linked<Q> other;
 		
 		if (obj != null && obj instanceof Set151Interface) {
-			other = (Lset<Q>) obj;
+			other = (Linked<Q>) obj;
 			
 			return (this.size() == 0 || this.containsAll(other)) && 
 					(other.size() == this.size());

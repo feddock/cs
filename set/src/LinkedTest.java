@@ -4,7 +4,12 @@ import java.util.Iterator;
 
 import org.junit.Test;
 
-public class LsetTest {
+/**
+ * JUnit Tests for set implementation
+ * @author HS
+ * version 2015.11.17
+ */
+public class LinkedTest {
 
 	@Test
 	public void testLset() {
